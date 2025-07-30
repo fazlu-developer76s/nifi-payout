@@ -28,7 +28,7 @@ try {
   console.error("Error creating role:", err);
 }
 app.get("/", async (req, res) => {
-    res.send("hello welcome to nifi vyapar api");
+    res.send("hello welcome to nifi payout api");
 });
 
 
