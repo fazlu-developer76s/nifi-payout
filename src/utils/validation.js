@@ -30,8 +30,26 @@ const categoryValidation = joi.object({
     })
 });
 
+const providerValidation = joi.object({
+  name: joi.string().required().messages({
+    'string.empty': 'Provider name is required',
+  }),
+  baseUrl: joi.string().allow('', null),
+  userName: joi.string().allow('', null),
+  password: joi.string().allow('', null),
+  option1: joi.string().allow('', null),
+  option2: joi.string().allow('', null),
+  option3: joi.string().allow('', null),
+  option4: joi.string().allow('', null),
+  code: joi.string().allow('', null),
+  provider_status: joi.string().required().messages({
+    'string.empty': 'Provider status is required',
+  }),
+});
+
 export{
     sendLoginOtp,
     signInValidation,
-    categoryValidation
+    categoryValidation,
+    providerValidation
 }

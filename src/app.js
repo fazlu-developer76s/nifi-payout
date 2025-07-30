@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./db/dbConfig.js";
 import authRouter from "./routes/auth.routes.js";
 import categoryRouter from "./routes/category.route.js";
+import providerRouter from "./routes/provider.routes.js";
 import { User } from "./models/user.model.js";
 const app = express();
 app.use(cors());
@@ -34,4 +35,5 @@ app.get("/", async (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/provider", providerRouter);
 export default app;
