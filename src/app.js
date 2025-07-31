@@ -5,7 +5,6 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import { connectDB } from "./db/dbConfig.js";
 import authRouter from "./routes/auth.routes.js";
-import categoryRouter from "./routes/category.route.js";
 import providerRouter from "./routes/provider.routes.js";
 import { User } from "./models/user.model.js";
 const app = express();
@@ -33,7 +32,7 @@ app.get("/", async (req, res) => {
 });
 
 
-app.use("/api/auth", authRouter);
-app.use("/api/category", categoryRouter);
-app.use("/api/provider", providerRouter);
+app.use("/api", authRouter);
+app.use("/api/user", authRouter);
+app.use("/api/admin/provider", providerRouter);
 export default app;

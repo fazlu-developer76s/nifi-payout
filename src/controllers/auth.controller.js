@@ -9,7 +9,9 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const mobileRegex = /^[6-9]\d{9}$/;
 
 export const signInFunction = async (req, res) => {
-  const { login_key, otp, role } = req.body;
+  const segments = req.path.split('/');
+  const role = segments[1]; 
+  const { login_key, otp } = req.body;
 
   let type;
   if (emailRegex.test(login_key)) {
@@ -46,34 +48,6 @@ export const signInFunction = async (req, res) => {
       [type]: login_key,
       role: role,
     });
-
-    // Prevent admin auto-signup
-    if (!findUser) {
-      if (role === "admin") {
-        return errorResponse(res, "Admin accounts must be created manually", 403);
-      }
-      if(type == "email"){
-           if (login_key == process.env.EMAIL) {
-            return errorResponse(res, "Invalid or unauthorized mobile number", 403);
-          }
-      }
-
-      if(type == "mobile"){
-           if (login_key == process.env.MOBILE) {
-            return errorResponse(res, "Invalid or unauthorized mobile number", 403);
-          }
-      }
-     
-      // Create new user
-      const newUser = new User({
-        [type]: login_key,
-        role: role,
-      });
-      await newUser.save();
-
-      findUser = newUser;
-    }
-
     // Construct user object
     const user = {
       id: findUser._id,
@@ -81,6 +55,7 @@ export const signInFunction = async (req, res) => {
       email: findUser.email || null,
       mobile: findUser.mobile || null,
       picture: findUser.picture || null,
+      role: findUser.role || null,
     };
 
     // Expire old tokens

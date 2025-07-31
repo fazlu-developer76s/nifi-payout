@@ -6,14 +6,14 @@ export const createProvider = async (req, res) => {
     const { name } = req.body;
     const existingProvider = await Provider.findOne({
       name: name,
-      userID: req.user.id,
+      // userID: req.user.id,
     });
 
     if (existingProvider) {
       return errorResponse(res, "Provider already exists", 400);
     }
     const newProviderData = {
-      userID: req.user.id,
+      // userID: req.user.id,
     };
     if (req.body.name) newProviderData.name = req.body.name;
     if (req.body.baseUrl) newProviderData.baseUrl = req.body.baseUrl;
@@ -41,7 +41,7 @@ export const createProvider = async (req, res) => {
 
 export const getProviders = async (req, res) => {
   try {
-    const providers = await Provider.find({ userID: req.user.id }).sort({ createdAt: -1 });
+    const providers = await Provider.find().sort({ createdAt: -1 });
     return successResponse(
       res,
       "Providers fetched successfully",
@@ -64,7 +64,6 @@ export const updateProvider = async (req, res) => {
 
     const duplicate = await Provider.findOne({
       name: req.body.name,
-      userID: req.user.id,
       _id: { $ne: id },
     });
 

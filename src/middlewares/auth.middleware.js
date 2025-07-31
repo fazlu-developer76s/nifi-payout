@@ -1,40 +1,54 @@
 import jwt from "jsonwebtoken";
-import { errorResponse } from "../utils/response.js";
 import { Token } from "../models/token.model.js";
+import { errorResponse } from "../utils/response.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key_here";
+const JWT_SECRET = process.env.JWT_SECRET;
 
-export const verifyToken = async (req, res, next) => {
+ const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  // 1. Check if header is present and formatted properly
-  // if (!authHeader || !authHeader.startsWith("Bearer ")) {
-  //   return errorResponse(res, "Authorization header is missing or invalid", 401);
-  // }
+  // 1. Validate Authorization header
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return errorResponse(res, "Authorization header is missing or invalid", 401);
+  }
 
-  // 2. Extract token from header
   const token = authHeader.split(" ")[1];
- 
+
   try {
-    // 3. Decode and verify JWT
-    const decoded = jwt.verify(authHeader, JWT_SECRET);
-    // 4. Check token existence and status in DB
+    // 2. Decode JWT
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    // 3. Validate token existence in DB
     const token_status = await Token.findOne({
-      token: authHeader, // or use just `token` if DB stores only the token part
+      token: token,
       userID: decoded.id,
+      role: decoded.role,
       token_status: "active"
     });
+
     if (!token_status) {
       return errorResponse(res, "Token is not valid or has expired", 401);
     }
 
-    // 5. Attach user data to request
+    // 4. Block role-based access
+    const segments = req.path.split('/').filter(Boolean);
+    const area = segments[1]; // 'admin' or 'user'
+    return console.log(area);
+    if (area === 'admin' && decoded.role !== 'admin') {
+      return errorResponse(res, "Unauthorized: Admin access only", 403);
+    }
+
+    if (area === 'user' && decoded.role !== 'user') {
+      return errorResponse(res, "Unauthorized: User access only", 403);
+    }
+
+    // 5. Attach decoded user info to request
     req.user = decoded;
     next();
   } catch (error) {
     console.error("JWT Error:", error.message);
-    errorResponse(res, "Token verification failed", 401);
+    return errorResponse(res, "Token verification failed", 401);
   }
+  
 };
-
 export default verifyToken;

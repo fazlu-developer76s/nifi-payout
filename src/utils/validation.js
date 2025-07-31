@@ -15,20 +15,9 @@ const signInValidation = joi.object({
     'string.length': 'OTP must be exactly 6 digits',
     'string.empty': 'OTP is required',
     'any.required': 'OTP is required',
-  }),
-  role: joi.string().required().messages({
-    'string.empty': 'Role is required',
   })
 });
 
-const categoryValidation = joi.object({
-    category_name: joi.string().required().messages({
-        'string.empty': 'Category is required'
-    }),
-    status: joi.string().required().messages({
-        'string.empty': 'Category status is required'
-    })
-});
 
 const providerValidation = joi.object({
   name: joi.string().required().messages({
@@ -50,6 +39,5 @@ const providerValidation = joi.object({
 export{
     sendLoginOtp,
     signInValidation,
-    categoryValidation,
     providerValidation
 }
