@@ -12,9 +12,9 @@ import { providerValidation } from '../utils/validation.js';
 
 const providerRouter = express.Router();
 
-providerRouter.post('/', verifyToken, validationCheck(providerValidation), createProvider);
-providerRouter.get('/', verifyToken, getProviders);
-providerRouter.put('/:id', verifyToken, validationCheck(providerValidation), updateProvider);
-providerRouter.delete('/:id', verifyToken, deleteProvider);
+providerRouter.post('/admin/provider', verifyToken, validationCheck(providerValidation), createProvider);
+providerRouter.get('/admin/provider', verifyToken, getProviders);
+providerRouter.put('/admin/provider/:id', verifyToken, validationCheck(providerValidation), updateProvider);
+providerRouter.delete('/admin/provider/:id', verifyToken, deleteProvider);
 
 export default providerRouter;

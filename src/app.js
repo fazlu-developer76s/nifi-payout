@@ -33,6 +33,6 @@ app.get("/", async (req, res) => {
 
 
 app.use("/api", authRouter);
-app.use("/api/user", authRouter);
-app.use("/api/admin/provider", providerRouter);
+app.use("/api", authRouter);
+app.use("/api", providerRouter);
 export default app;
