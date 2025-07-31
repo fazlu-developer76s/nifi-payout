@@ -48,6 +48,32 @@ export const signInFunction = async (req, res) => {
       [type]: login_key,
       role: role,
     });
+    // Prevent admin auto-signup
+    if (!findUser) {
+      if (role === "admin") {
+        return errorResponse(res, "Admin accounts must be created manually", 403);
+      }
+      if(type == "email"){
+           if (login_key == process.env.EMAIL) {
+            return errorResponse(res, "Invalid or unauthorized mobile number", 403);
+          }
+      }
+
+      if(type == "mobile"){
+           if (login_key == process.env.MOBILE) {
+            return errorResponse(res, "Invalid or unauthorized mobile number", 403);
+          }
+      }
+      // Create new user
+      const newUser = new User({
+        [type]: login_key,
+        role: role,
+      });
+      await newUser.save();
+
+      findUser = newUser;
+    }
+
     // Construct user object
     const user = {
       id: findUser._id,

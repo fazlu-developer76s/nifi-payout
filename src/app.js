@@ -17,6 +17,7 @@ try {
   const findAdmin = await User.findOne({ role: "admin" });
   if(!findAdmin) {
     await User.create({
+      name:"Admin",
       role: "admin",
       mobile: process.env.MOBILE,
       email: process.env.EMAIL,
